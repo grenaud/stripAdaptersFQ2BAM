@@ -436,19 +436,46 @@ int main (int argc, char *argv[]) {
 	//BEGIN ADDED 
 	string sequenceFound = *(fo1->getSeq());
 	string qualFound     = *(fo1->getQual());
-	if( editDistTwoStrings (sequenceFound.substr(9,8) , linkerF) > linkerEdit){
+	if(sequenceFound.size()<= (linkerF.size() + linkerR.size() +8 +8))
+	    continue;
+
+	if( editDistTwoStrings (sequenceFound.substr(8,linkerF.size()) , linkerF) > linkerEdit){
 	    continue;
 	}
 
+	if( editDistTwoStrings( sequenceFound.substr(sequenceFound.size()-linkerR.size()-8,linkerR.size()), linkerR) > linkerEdit){
+	    continue;
+	}
+	// cout<<sequenceFound<<endl;
+	// cout<<sequenceFound.substr(8,linkerF.size())<<endl;
+	// cout<<linkerF<<endl;
+
+	// cout<<sequenceFound.substr(sequenceFound.size()-linkerR.size()-8,linkerR.size())<<endl;
+	// cout<<linkerR<<endl;
+
+	index1  = sequenceFound.substr(0,8);
+	index1q = qualFound.substr(0    ,8);
+	index2  = sequenceFound.substr(sequenceFound.size()-8 , 8);
+	index2q = qualFound.substr(sequenceFound.size()-8     , 8);
+
+	sequenceFound = sequenceFound.substr(8+linkerF.size(),sequenceFound.size() - ( (linkerF.size() + linkerR.size() +8 +8)) );
+	qualFound     = qualFound.substr(    8+linkerF.size(),qualFound.size()     - ( (linkerF.size() + linkerR.size() +8 +8)) );
+	// cout<<sequenceFound<<endl;
+	// //	cout<<qualFound<<endl<<endl;
+	// cout<<endl;
+	// if( editDistTwoStrings (sequenceFound.substr(sequenceFound.,8) , linkerF) > linkerEdit){
+	//     continue;
+	// }
+
 	//END ADDED 
-	toWrite1.Name=def1s;
-	toWrite1.MapQuality=0;
-	toWrite1.QueryBases =  
+	toWrite1.Name       =  def1s;
+	toWrite1.MapQuality =  0;
+	toWrite1.QueryBases =  sequenceFound;
 
 	if(isFasta){
 	    toWrite1.Qualities  =  string(toWrite1.QueryBases.length(),char(qualForFasta+33));	
 	}else{
-	    toWrite1.Qualities  =  *(fo1->getQual());
+	    toWrite1.Qualities  =  qualFound;
 	}
 
 
